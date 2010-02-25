@@ -162,7 +162,18 @@ describe Warden::Strategies::Base do
       str._run!
       str.headers["Location"].should == "/foo/bar?foo=bar"
     end
-    
+
+    it "should add redirected url parameters to existent parameters" do
+      RAS.add(:foobar) do
+        def authenticate!
+          redirect!("/foo/bar?foobar=foobar", :foo => "bar")
+        end
+      end
+      str = RAS[:foobar].new(env_with_params)
+      str._run!
+      str.headers["Location"].should == "/foo/bar?foobar=foobar&foo=bar"
+    end
+
     it "should allow you to set a message" do
       RAS.add(:foobar) do
         def authenticate!

@@ -139,7 +139,7 @@ module Warden
         halt!
         @status = opts[:permanent] ? 301 : 302
         headers["Location"] = url
-        headers["Location"] << "?" << Rack::Utils.build_query(params) unless params.empty?
+        headers["Location"] << (url.include?("?") ? "&" : "?") << Rack::Utils.build_query(params) unless params.empty?
         headers["Content-Type"] = opts[:content_type] || 'text/plain'
 
         @message = opts[:message] || "You are being redirected to #{headers["Location"]}"
